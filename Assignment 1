@@ -1,0 +1,121 @@
+import java.util.Scanner;
+
+class BSTNode {
+    int data;
+    BSTNode leftChild;
+    BSTNode rightChild;
+
+    public BSTNode() {
+        leftChild = null;
+        rightChild = null;
+    }
+}
+
+public class BST{
+    BSTNode root;
+
+    public BST() {
+        root = null;
+    }
+
+    BSTNode insert(BSTNode root, int data)
+    {
+        if(root == null)
+        {
+            root = new BSTNode();
+            root.data = data;
+            return root;
+        }
+        if(data == root.data)
+        {
+            System.out.println("Duplicate key - insertion not allowed");
+            return root;
+        }
+        if(data<root.data)
+        {
+            root.leftChild = insert(root.leftChild, data);
+        }
+        else{
+            root.rightChild = insert(root.rightChild, data);
+        }
+        return root;
+    }
+
+    void search(BSTNode root, int key)
+    {
+        if(root == null)
+        {
+            System.out.println("Tree is empty");
+            return;
+        }
+        BSTNode p = root;
+        while(p!=null)
+        {
+            if(key == p.data)
+            {
+                System.out.println("Key found");
+                return;
+            }
+            else if(key<p.data)
+            {
+                p = p.leftChild;
+            }
+            else {
+                p = p.rightChild;
+            }
+        }
+        System.out.println("Key not found");
+    }
+
+    void inorder(BSTNode root) {
+        if (root != null) {
+            inorder(root.leftChild);
+            System.out.print(root.data + " ");
+            inorder(root.rightChild);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        BST tree = new BST();
+
+        int choice, value;
+        do {
+            System.out.println(" MENU ");
+            System.out.println("1. Insert");
+            System.out.println("2. Search");
+            System.out.println("3. Display (Inorder Traversal)");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter value to insert: ");
+                    value = sc.nextInt();
+                    tree.root = tree.insert(tree.root, value);
+                    break;
+                case 2:
+                    System.out.print("Enter value to search: ");
+                    value = sc.nextInt();
+                    tree.search(tree.root, value);
+                    break;
+                case 3:
+                    System.out.print("Inorder Traversal: ");
+                    tree.inorder(tree.root);
+                    System.out.println();
+                    break;
+                case 0:
+                    System.out.println("Exited the program.");
+                    break;
+                default:
+                    System.out.println("Enter a valid choice.");
+            }
+
+        }while(choice != 0);
+        sc.close();
+    }
+}
+
+
