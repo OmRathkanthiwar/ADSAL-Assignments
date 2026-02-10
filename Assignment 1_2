@@ -30,8 +30,7 @@ public class IBST {
             return;
         }
 
-        IBSTNode curr = root;
-        IBSTNode parent = null;
+        IBSTNode curr = root, parent = null;
 
         while (curr != null) {
             parent = curr;
@@ -146,11 +145,11 @@ public class IBST {
 
         Queue<IBSTNode> q = new ArrayDeque<>();
         q.offer(root);
-        int height = 0;
+        int h = 0;
 
         while (!q.isEmpty()) {
             int size = q.size();
-            height++;
+            h++;
 
             for (int i = 0; i < size; i++) {
                 IBSTNode node = q.poll();
@@ -160,7 +159,7 @@ public class IBST {
                     q.offer(node.right);
             }
         }
-        return height;
+        return h;
     }
 
     void mirror() {
@@ -228,6 +227,50 @@ public class IBST {
         }
     }
 
+    void delete(int key) {
+        IBSTNode curr = root, parent = null;
+
+        while (curr != null && curr.data != key) {
+            parent = curr;
+            if (key < curr.data)
+                curr = curr.left;
+            else
+                curr = curr.right;
+        }
+
+        if (curr == null) {
+            System.out.println("Key not found");
+            return;
+        }
+
+        if (curr.left == null || curr.right == null) {
+            IBSTNode child = (curr.left != null) ? curr.left : curr.right;
+
+            if (parent == null)
+                root = child;
+            else if (parent.left == curr)
+                parent.left = child;
+            else
+                parent.right = child;
+            return;
+        }
+
+        IBSTNode succParent = curr;
+        IBSTNode succ = curr.right;
+
+        while (succ.left != null) {
+            succParent = succ;
+            succ = succ.left;
+        }
+
+        curr.data = succ.data;
+
+        if (succParent.left == succ)
+            succParent.left = succ.right;
+        else
+            succParent.right = succ.right;
+    }
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -235,7 +278,7 @@ public class IBST {
         int choice, value;
 
         do {
-            System.out.println("\n1.Insert\n2.Search\n3.Inorder\n4.Preorder\n5.Postorder\n6.Levelorder\n7.Height\n8.Mirror\n9.Display Parents\n10.Display Leaf Nodes\n0.Exit");
+            System.out.println("\n1.Insert\n2.Search\n3.Inorder\n4.Preorder\n5.Postorder\n6.Levelorder\n7.Height\n8.Mirror\n9.Display Parents\n10.Display Leaf Nodes\n11.Delete\n0.Exit");
             choice = sc.nextInt();
 
             switch (choice) {
@@ -278,9 +321,14 @@ public class IBST {
                     tree.displayLeafNodes();
                     System.out.println();
                     break;
+                case 11:
+                    value = sc.nextInt();
+                    tree.delete(value);
+                    break;
             }
         } while (choice != 0);
 
         sc.close();
     }
 }
+
