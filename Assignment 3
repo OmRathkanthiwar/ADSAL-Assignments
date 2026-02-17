@@ -1,0 +1,163 @@
+import java.util.Scanner;
+
+class TBTNode {
+    int data;
+    TBTNode left;
+    TBTNode right;
+    boolean leftThread;
+    boolean rightThread;
+
+    TBTNode(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+        leftThread = true;
+        rightThread = true;
+    }
+}
+
+public class TBT {
+
+    TBTNode root;
+
+    TBT() {
+        root = null;
+    }
+
+    TBTNode insert(TBTNode root, int key) {
+        TBTNode ptr = root;
+        TBTNode parent = null;
+
+        while (ptr != null) {
+            if (key == ptr.data) {
+                System.out.println("Duplicate key not allowed");
+                return root;
+            }
+
+            parent = ptr;
+
+            if (key < ptr.data) {
+                if (!ptr.leftThread)
+                    ptr = ptr.left;
+                else
+                    break;
+            } else {
+                if (!ptr.rightThread)
+                    ptr = ptr.right;
+                else
+                    break;
+            }
+        }
+
+        TBTNode newNode = new TBTNode(key);
+
+        if (parent == null) {
+            root = newNode;
+            newNode.left = null;
+            newNode.right = null;
+        }
+        else if (key < parent.data) {
+            newNode.left = parent.left;
+            newNode.right = parent;
+            parent.leftThread = false;
+            parent.left = newNode;
+        }
+        else {
+            newNode.left = parent;
+            newNode.right = parent.right;
+            parent.rightThread = false;
+            parent.right = newNode;
+        }
+
+        return root;
+    }
+
+    TBTNode leftMost(TBTNode node) {
+        if (node == null)
+            return null;
+
+        while (!node.leftThread)
+            node = node.left;
+
+        return node;
+    }
+
+    void inorder(TBTNode root) {
+        if (root == null)
+            return;
+
+        TBTNode curr = leftMost(root);
+
+        while (curr != null) {
+            System.out.print(curr.data + " ");
+
+            if (curr.rightThread)
+                curr = curr.right;
+            else
+                curr = leftMost(curr.right);
+        }
+    }
+
+    void preorder(TBTNode root) {
+        if (root == null)
+            return;
+
+        TBTNode curr = root;
+
+        while (curr != null) {
+            System.out.print(curr.data + " ");
+
+            if (!curr.leftThread)
+                curr = curr.left;
+            else if (!curr.rightThread)
+                curr = curr.right;
+            else {
+                while (curr != null && curr.rightThread)
+                    curr = curr.right;
+                if (curr != null)
+                    curr = curr.right;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        TBT tree = new TBT();
+        int choice, value;
+
+        do {
+            System.out.println("\n-- MENU --");
+            System.out.println("1. Insert");
+            System.out.println("2. Inorder");
+            System.out.println("3. Preorder");
+            System.out.println("0. Exit");
+            System.out.print("Enter choice: ");
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter value: ");
+                    value = sc.nextInt();
+                    tree.root = tree.insert(tree.root, value);
+                    break;
+
+                case 2:
+                    System.out.print("Inorder: ");
+                    tree.inorder(tree.root);
+                    System.out.println();
+                    break;
+
+                case 3:
+                    System.out.print("Preorder: ");
+                    tree.preorder(tree.root);
+                    System.out.println();
+                    break;
+            }
+
+        } while (choice != 0);
+
+        sc.close();
+    }
+}
