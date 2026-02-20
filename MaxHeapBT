@@ -1,0 +1,211 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+class HeapNode {
+    int data;
+    HeapNode left;
+    HeapNode right;
+
+    HeapNode(int data) {
+        this.data = data;
+        left = right = null;
+    }
+}
+
+public class MaxHeapBT {
+    HeapNode root;
+
+    MaxHeapBT() {
+        root = null;
+    }
+
+    HeapNode findParent(HeapNode root, HeapNode node) {
+        if (root == null || root == node)
+            return null;
+
+        Queue<HeapNode> q = new LinkedList<>();
+        q.add(root);
+
+        while (!q.isEmpty()) {
+            HeapNode temp = q.remove();
+
+            if (temp.left == node || temp.right == node)
+                return temp;
+
+            if (temp.left != null)
+                q.add(temp.left);
+
+            if (temp.right != null)
+                q.add(temp.right);
+        }
+        return null;
+    }
+
+    void insert(int value) {
+
+        HeapNode newNode = new HeapNode(value);
+
+        if (root == null) {
+            root = newNode;
+            return;
+        }
+
+        Queue<HeapNode> q = new LinkedList<>();
+        q.add(root);
+
+        HeapNode parent = null;
+
+        while (!q.isEmpty()) {
+            parent = q.remove();
+
+            if (parent.left == null) {
+                parent.left = newNode;
+                break;
+            } else
+                q.add(parent.left);
+
+            if (parent.right == null) {
+                parent.right = newNode;
+                break;
+            } else
+                q.add(parent.right);
+        }
+
+        HeapNode child = newNode;
+
+        while (true) {
+            HeapNode par = findParent(root, child);
+            if (par != null && par.data < child.data) {
+                int temp = par.data;
+                par.data = child.data;
+                child.data = temp;
+                child = par;
+            } else
+                break;
+        }
+    }
+
+    void deleteMax() {
+
+        if (root == null) {
+            System.out.println("Heap is empty");
+            return;
+        }
+
+        System.out.println("Deleted: " + root.data);
+
+        if (root.left == null && root.right == null) {
+            root = null;
+            return;
+        }
+
+        Queue<HeapNode> q = new LinkedList<>();
+        q.add(root);
+
+        HeapNode last = null;
+        HeapNode parentOfLast = null;
+
+        while (!q.isEmpty()) {
+            HeapNode temp = q.remove();
+
+            if (temp.left != null) {
+                parentOfLast = temp;
+                last = temp.left;
+                q.add(temp.left);
+            }
+
+            if (temp.right != null) {
+                parentOfLast = temp;
+                last = temp.right;
+                q.add(temp.right);
+            }
+        }
+
+        root.data = last.data;
+
+        if (parentOfLast.right == last)
+            parentOfLast.right = null;
+        else
+            parentOfLast.left = null;
+
+        HeapNode current = root;
+
+        while (current != null) {
+
+            HeapNode largest = current;
+
+            if (current.left != null && current.left.data > largest.data)
+                largest = current.left;
+
+            if (current.right != null && current.right.data > largest.data)
+                largest = current.right;
+
+            if (largest != current) {
+                int temp = current.data;
+                current.data = largest.data;
+                largest.data = temp;
+                current = largest;
+            } else
+                break;
+        }
+    }
+    void levelOrder() {
+        if (root == null) {
+            System.out.println("Heap is empty");
+            return;
+        }
+
+        Queue<HeapNode> q = new LinkedList<>();
+        q.add(root);
+
+        while (!q.isEmpty()) {
+            HeapNode temp = q.remove();
+            System.out.print(temp.data + " ");
+
+            if (temp.left != null)
+                q.add(temp.left);
+
+            if (temp.right != null)
+                q.add(temp.right);
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        MaxHeapBT heap = new MaxHeapBT();
+        int choice, value;
+
+        do {
+            System.out.println("\n--- MAX HEAP ---");
+            System.out.println("1. Insert");
+            System.out.println("2. Delete Max");
+            System.out.println("3. Display");
+            System.out.println("0. Exit");
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter value: ");
+                    value = sc.nextInt();
+                    heap.insert(value);
+                    break;
+
+                case 2:
+                    heap.deleteMax();
+                    break;
+
+                case 3:
+                    heap.levelOrder();
+                    break;
+            }
+
+        } while (choice != 0);
+
+        sc.close();
+    }
+
+}
