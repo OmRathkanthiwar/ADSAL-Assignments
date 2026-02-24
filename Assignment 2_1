@@ -10,11 +10,11 @@ class Job {
     }
 }
 
-public class JobScheduler {
+class MaxJobScheduler {
 
     private ArrayList<Job> heap;
 
-    public JobScheduler() {
+    public MaxJobScheduler() {
         heap = new ArrayList<>();
     }
 
@@ -111,7 +111,7 @@ public class JobScheduler {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        JobScheduler scheduler = new JobScheduler();
+        MaxJobScheduler scheduler = new MaxJobScheduler();
 
         int choice;
 
