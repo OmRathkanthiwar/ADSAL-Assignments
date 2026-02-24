@@ -37,22 +37,61 @@ public class JobScheduler {
     }
 
     private void heapifyUp(int index) {
-
         while (index > 0 && heap.get(index).time > heap.get(parent(index)).time) {
             swap(index, parent(index));
             index = parent(index);
         }
     }
 
+    private void heapifyDown(int index) {
+
+        int largest = index;
+        int left = leftChild(index);
+        int right = rightChild(index);
+
+        if (left < heap.size() &&
+                heap.get(left).time > heap.get(largest).time) {
+            largest = left;
+        }
+
+        if (right < heap.size() &&
+                heap.get(right).time > heap.get(largest).time) {
+            largest = right;
+        }
+
+        if (largest != index) {
+            swap(index, largest);
+            heapifyDown(largest);
+        }
+    }
+
     public void insertProcess(String jobName, int time) {
 
         Job newJob = new Job(jobName, time);
-
         heap.add(newJob);
 
         heapifyUp(heap.size() - 1);
 
         System.out.println("Job inserted: " + jobName + " (" + time + ")");
+    }
+
+    public void deleteProcess() {
+
+        if (heap.isEmpty()) {
+            System.out.println("Heap is empty");
+            return;
+        }
+
+        Job rootJob = heap.get(0);
+
+        Job lastJob = heap.get(heap.size() - 1);
+        heap.set(0, lastJob);
+        heap.remove(heap.size() - 1);
+
+        heapifyDown(0);
+
+        System.out.println("Deleted Job: " + rootJob.jobName +
+                " (" + rootJob.time + ")");
     }
 
     public void displayHeap() {
@@ -64,7 +103,8 @@ public class JobScheduler {
 
         System.out.println("Heap (Level Order):");
         for (int i = 0; i < heap.size(); i++) {
-            System.out.println(heap.get(i).jobName + " (" + heap.get(i).time + ")");
+            System.out.println(heap.get(i).jobName +
+                    " (" + heap.get(i).time + ")");
         }
     }
 
@@ -77,8 +117,9 @@ public class JobScheduler {
 
         do {
             System.out.println("\n1. Insert Job");
-            System.out.println("2. Display Heap");
-            System.out.println("3. Exit");
+            System.out.println("2. Delete Highest Priority Job");
+            System.out.println("3. Display Heap");
+            System.out.println("4. Exit");
             System.out.print("Enter choice: ");
             choice = sc.nextInt();
 
@@ -94,10 +135,14 @@ public class JobScheduler {
                     break;
 
                 case 2:
-                    scheduler.displayHeap();
+                    scheduler.deleteProcess();
                     break;
 
                 case 3:
+                    scheduler.displayHeap();
+                    break;
+
+                case 4:
                     System.out.println("Exiting...");
                     break;
 
@@ -105,7 +150,7 @@ public class JobScheduler {
                     System.out.println("Invalid choice");
             }
 
-        } while (choice != 3);
+        } while (choice != 4);
 
         sc.close();
     }
