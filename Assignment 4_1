@@ -1,0 +1,58 @@
+import java.util.*;
+
+public class DFSCities {
+
+    HashMap<String, ArrayList<String>> graph;
+    HashSet<String> visited;
+
+    DFSCities() {
+        graph = new HashMap<>();
+        visited = new HashSet<>();
+    }
+
+    void addEdge(String u, String v) {
+
+        graph.putIfAbsent(u, new ArrayList<>());
+        graph.putIfAbsent(v, new ArrayList<>());
+
+        graph.get(u).add(v);
+        graph.get(v).add(u);
+    }
+
+    void dfs(String city) {
+
+        visited.add(city);
+        System.out.print(city + " ");
+
+        for (String neighbor : graph.get(city)) {
+            if (!visited.contains(neighbor)) {
+                dfs(neighbor);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        DFSCities g = new DFSCities();
+
+        System.out.print("Enter number of edges: ");
+        int e = sc.nextInt();
+        sc.nextLine();
+
+        for (int i = 0; i < e; i++) {
+            System.out.print("Enter edge (city1 city2): ");
+            String u = sc.next();
+            String v = sc.next();
+            g.addEdge(u, v);
+        }
+
+        System.out.print("Enter starting city: ");
+        String start = sc.next();
+
+        System.out.print("DFS Traversal: ");
+        g.dfs(start);
+
+        sc.close();
+    }
+}
