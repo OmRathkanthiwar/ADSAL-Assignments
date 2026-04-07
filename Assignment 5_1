@@ -4,7 +4,7 @@ public class Prims {
 
     static int V;
 
-    void prims(int[][] graph) {
+    void prims(int[][] graph, String[] dept) {
 
         int[] cost = new int[V];
         int[] parent = new int[V];
@@ -36,7 +36,7 @@ public class Prims {
         int total = 0;
 
         for (int i = 1; i < V; i++) {
-            System.out.println(parent[i] + " - " + i + "\t" + graph[i][parent[i]]);
+            System.out.println(dept[parent[i]] + " - " + dept[i] + "\t" + graph[i][parent[i]]);
             total += graph[i][parent[i]];
         }
 
@@ -59,12 +59,21 @@ public class Prims {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Enter number of vertices: ");
+        System.out.print("Enter number of departments: ");
         V = sc.nextInt();
+        sc.nextLine();
+
+        String[] dept = new String[V];
+
+        // Input department names
+        System.out.println("Enter department names:");
+        for (int i = 0; i < V; i++) {
+            dept[i] = sc.nextLine();
+        }
 
         int[][] graph = new int[V][V];
 
-        System.out.println("Enter adjacency matrix:");
+        System.out.println("Enter adjacency matrix (distances):");
         for (int i = 0; i < V; i++) {
             for (int j = 0; j < V; j++) {
                 graph[i][j] = sc.nextInt();
@@ -72,7 +81,7 @@ public class Prims {
         }
 
         Prims p = new Prims();
-        p.prims(graph);
+        p.prims(graph, dept);
 
         sc.close();
     }
