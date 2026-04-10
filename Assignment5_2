@@ -1,0 +1,91 @@
+import java.util.*;
+
+class Edge {
+    int u, v, weight;
+
+    Edge(int u, int v, int weight) {
+        this.u = u;
+        this.v = v;
+        this.weight = weight;
+    }
+}
+
+public class Kruskals {
+
+    static int V, E;
+
+    // Find parent (with path compression)
+    int find(int parent[], int i) {
+        if (parent[i] != i) {
+            parent[i] = find(parent, parent[i]);
+        }
+        return parent[i];
+    }
+
+    // Union of two sets
+    void union(int parent[], int x, int y) {
+        int rootX = find(parent, x);
+        int rootY = find(parent, y);
+        parent[rootX] = rootY;
+    }
+
+    void kruskal(Edge edges[]) {
+
+        // Sort edges by weight
+        Arrays.sort(edges, (a, b) -> a.weight - b.weight);
+
+        int parent[] = new int[V];
+
+        // Initialize sets
+        for (int i = 0; i < V; i++) {
+            parent[i] = i;
+        }
+
+        System.out.println("Edge \tWeight");
+
+        int count = 0, i = 0, total = 0;
+
+        while (count < V - 1 && i < E) {
+
+            Edge e = edges[i++];
+            int u = find(parent, e.u);
+            int v = find(parent, e.v);
+
+            // If no cycle
+            if (u != v) {
+                System.out.println(e.u + " - " + e.v + "\t" + e.weight);
+                total += e.weight;
+                union(parent, u, v);
+                count++;
+            }
+        }
+
+        System.out.println("Total Cost: " + total);
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of vertices: ");
+        V = sc.nextInt();
+
+        System.out.print("Enter number of edges: ");
+        E = sc.nextInt();
+
+        Edge edges[] = new Edge[E];
+
+        System.out.println("Enter edges (u v weight):");
+        for (int i = 0; i < E; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            int w = sc.nextInt();
+            edges[i] = new Edge(u, v, w);
+        }
+
+        Kruskals k = new Kruskals();
+        k.kruskal(edges);
+
+        sc.close();
+    }
+}
