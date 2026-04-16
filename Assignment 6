@@ -2,8 +2,8 @@ import java.util.*;
 
 class Main {
 
-    static final int V = 5;
-    static int graph[][] = new int[V][V];
+    static int[][] graph;
+    static int V;
 
     static int minDistance(int dist[], boolean visited[]) {
         int min = Integer.MAX_VALUE, minIndex = -1;
@@ -43,13 +43,18 @@ class Main {
             }
         }
 
-        System.out.println("Shortest distances from source " + src + ":");
+        System.out.println("Shortest distances:");
         for (int i = 0; i < V; i++) {
             System.out.println("To " + i + " = " + dist[i]);
         }
     }
 
     static void inputGraph(Scanner sc) {
+        System.out.print("Enter number of vertices: ");
+        V = sc.nextInt();
+
+        graph = new int[V][V];
+
         System.out.println("Enter adjacency matrix:");
         for (int i = 0; i < V; i++) {
             for (int j = 0; j < V; j++) {
@@ -59,7 +64,11 @@ class Main {
     }
 
     static void displayGraph() {
-        System.out.println("Graph Matrix:");
+        if (graph == null) {
+            System.out.println("Graph not initialized!");
+            return;
+        }
+
         for (int i = 0; i < V; i++) {
             for (int j = 0; j < V; j++) {
                 System.out.print(graph[i][j] + " ");
@@ -94,6 +103,10 @@ class Main {
                     break;
 
                 case 3:
+                    if (graph == null) {
+                        System.out.println("Enter graph first!");
+                        break;
+                    }
                     System.out.print("Enter source vertex: ");
                     int src = sc.nextInt();
                     dijkstra(src);
